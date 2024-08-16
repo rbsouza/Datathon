@@ -51,3 +51,9 @@ st.subheader(f'Distribuição da variável {variable}')
 plt.figure(figsize=(10, 6))
 sns.histplot(df[variable], kde=True)
 st.pyplot(plt)
+
+# Boxplot
+st.write(f'Boxplot de {variable}')
+fig, ax = plt.subplots()
+sns.boxplot(x=df[variable], ax=ax)
+st.pyplot(fig)
