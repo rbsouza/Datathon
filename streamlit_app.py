@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import LabelEncoder
+
+# Função para aplicar encoding nas variáveis categóricas
+def encode_categorical(df):
+    le = LabelEncoder()
+    for column in df.select_dtypes(include=['object']).columns:
+        df[column] = le.fit_transform(df[column])
+    return df
 
 # Função para carregar dados de um URL
 @st.cache_data
@@ -50,10 +58,19 @@ variable = st.selectbox('Selecione a variável', df.columns)
 st.subheader(f'Distribuição da variável {variable}')
 plt.figure(figsize=(10, 6))
 sns.histplot(df[variable], kde=True)
-st.pyplot(plt)
+st.pyplot(plt, use_container_width=True)
 
 # Boxplot
 st.write(f'Boxplot de {variable}')
 fig, ax = plt.subplots()
 sns.boxplot(x=df[variable], ax=ax)
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=True)
+
+# Aplicar encoding nas variáveis categóricas
+df_encoded = encode_categorical(df)
+
+# Correlação
+st.subheader('Matriz de Correlação')
+fig, ax = plt.subplots()
+sns.heatmap(df_encoded.corr(), annot=True, cmap='coolwarm', ax=ax)
+st.pyplot(fig, use_container_width=True)
